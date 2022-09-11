@@ -35,47 +35,78 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
     public virtual async Task<TEntity>? Get(
         Expression<Func<TEntity, bool>> filter = null,
         Expression<Func<TEntity, TEntity>>? select = null, string includeProperties = "",
-        bool isTrack = false, CancellationToken token = default)
+        bool isTrackable = false, CancellationToken token = default)
     {
         IQueryable<TEntity> query = dbSet;
-        query = QueryGenerator(query, filter, null, includeProperties, isTrack);
-
-        if (select != null) return query.Select(select).FirstOrDefault();
-
-        return query.FirstOrDefault();
+        query = QueryGenerator(query, filter, null, includeProperties, isTrackable);
+        try
+        {
+            if (select != null) return query.Select(select).FirstOrDefault();
+            return query.FirstOrDefault();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); // Can Log And Remove Console.WriteLine Or Anything You Like 
+            return null;
+        }
+ 
     }
 
     public virtual async Task<TOutPut>? Get<TOutPut>(
         Expression<Func<TEntity, bool>> filter = null, 
         Expression<Func<TEntity, TOutPut>>? select = null, string includeProperties = "",
-        bool isTrack = false, CancellationToken token = default) where TOutPut : class
+        bool isTrackable = false, CancellationToken token = default) where TOutPut : class
     {
         IQueryable<TEntity> query = dbSet;
-        query = QueryGenerator(query, filter, null, includeProperties, isTrack);
-        if (select != null) return query.Select(select).FirstOrDefault();
-        return query.Adapt<TOutPut>();
+        query = QueryGenerator(query, filter, null, includeProperties, isTrackable);
+        try
+        {
+            if (select != null) return query.Select(select).FirstOrDefault();
+            return query.Adapt<TOutPut>();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); // Can Log And Remove Console.WriteLine
+            return null;
+        }
     }
 
     public virtual async Task<IEnumerable<TEntity>>? GetAll(Expression<Func<TEntity, bool>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         Expression<Func<TEntity, TEntity>>? select = null, string includeProperties = "",
-        bool isTrack = false, CancellationToken token = default)
+        bool isTrackable = false, CancellationToken token = default)
     {
         IQueryable<TEntity> query = dbSet;
-        query = QueryGenerator(query, filter, orderBy, includeProperties, isTrack);
-        if (select != null) return query.Select(select).ToList();
-        return query.ToList();
+        query = QueryGenerator(query, filter, orderBy, includeProperties, isTrackable);
+        try
+        {
+            if (select != null) return query.Select(select).ToList();
+            return query.ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); // Can Log And Remove Console.WriteLine
+            return null;
+        }
     }
     public virtual async Task<IEnumerable<TOutPut>>? GetAll<TOutPut>(Expression<Func<TEntity, bool>> filter = null, 
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null
         , Expression<Func<TEntity, TOutPut>>? select = null, string includeProperties = "",
-        bool isTrack = false, CancellationToken token = default) where TOutPut : class
+        bool isTrackable = false, CancellationToken token = default) where TOutPut : class
     {
 
         IQueryable<TEntity> query = dbSet;
-        query = QueryGenerator(query, filter, orderBy, includeProperties, isTrack);
-        if (select != null) return query.Select(select).ToList();
-        return query.ProjectToType<TOutPut>().ToList();
+        query = QueryGenerator(query, filter, orderBy, includeProperties, isTrackable);
+        try
+        {
+            if (select != null) return query.Select(select).ToList();
+            return query.ProjectToType<TOutPut>().ToList();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e); // Can Log And Remove Console.WriteLine
+            return null;
+        }
     }
 
     #endregion
@@ -104,8 +135,15 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
     #endregion
 
     #region Utility Methods
-
-    private  IQueryable<TEntity> QueryWithIncludeProperties(IQueryable<TEntity> query,
+    /// <summary>
+    /// Include Other Models Base On string Entered
+    /// Like ("Category,Category.User" )
+    /// Then Category And User In Category Include To Query
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="includeProperties"></param>
+    /// <returns></returns>
+    private IQueryable<TEntity> QueryWithIncludeProperties(IQueryable<TEntity> query,
         string includeProperties)
     {
         foreach (var includeProperty in includeProperties.Split
@@ -115,18 +153,27 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
         }
         return query;
     }
+    /// <summary>
+    /// Filter Query Depend On Parameters 
+    /// </summary>
+    /// <param name="query"></param>
+    /// <param name="filter"></param>
+    /// <param name="orderBy"></param>
+    /// <param name="includeProperties"></param>
+    /// <param name="isTrackable"></param>
+    /// <returns></returns>
     private  IQueryable<TEntity> QueryGenerator(IQueryable<TEntity> query,
         Expression<Func<TEntity, bool>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         string includeProperties = "",
-        bool isTrack = false)
+        bool isTrackable = false)
     {
         if (filter != null) query = query.Where(filter);
 
-        if (string.IsNullOrWhiteSpace(includeProperties))
+        if (!string.IsNullOrWhiteSpace(includeProperties))
             query = QueryWithIncludeProperties(query, includeProperties);
 
-        if (!isTrack) query = query.AsNoTracking();
+        if (!isTrackable) query = query.AsNoTracking();
 
         if (orderBy != null) query = orderBy(query);
         return query;
