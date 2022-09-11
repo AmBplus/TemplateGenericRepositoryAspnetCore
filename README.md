@@ -7,5 +7,5 @@ The Project Template Architechture Simplified
 
 You Can Change return Type To ResultDto<IEnumbrable<TEntity>> Or Anything You Preferred
 
-Message Error In Implmentaion Handled By Console By You Can Change Log it Or Anything You Preferred  
+Message Error In Implmentaion Handled By Console , You Can Log it Or Anything You Preferred  
 
