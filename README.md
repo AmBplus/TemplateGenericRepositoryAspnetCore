@@ -11,7 +11,7 @@ Template Generic Repository In Onion Architecture
 
 *In Application Layer , There Are Example How Use This Pattern
   
-** If Find Any Error Or Idea Make This Implementaion Better Tell Me (: **  
+** If Find Any Error Or Idea Make This Implementaion Better Tell Me (:
 
   --- Hope Useful And Enjoy it ---
 
