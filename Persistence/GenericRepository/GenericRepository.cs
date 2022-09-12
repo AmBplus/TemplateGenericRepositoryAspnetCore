@@ -30,7 +30,7 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
 
     #region Methods
 
-    #region Query
+    #region Query Methods
 
     public virtual async Task<TEntity>? Get(
         Expression<Func<TEntity, bool>> filter = null,
@@ -46,7 +46,7 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
         }
         catch (Exception e)
         {
-            Console.WriteLine(e); // Can Log And Remove Console.WriteLine Or Anything You Like 
+            Console.WriteLine(e); // Can Log And Remove Console.WriteLine Or Anything You Like To Do
             return null;
         }
  
@@ -94,7 +94,6 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
         , Expression<Func<TEntity, TOutPut>>? select = null, string includeProperties = "",
         bool isTrackable = false, CancellationToken token = default) where TOutPut : class
     {
-
         IQueryable<TEntity> query = dbSet;
         query = QueryGenerator(query, filter, orderBy, includeProperties, isTrackable);
         try
@@ -108,10 +107,9 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
             return null;
         }
     }
+    #endregion /Query Methods
 
-    #endregion
-
-    #region Command
+    #region Command Methods
 
     public virtual void Insert(TEntity entity)
     {
@@ -132,7 +130,7 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
         Context.Entry(entityToUpdate).State = EntityState.Modified;
     }
 
-    #endregion
+    #endregion /Command Methods
 
     #region Utility Methods
     /// <summary>
@@ -179,9 +177,9 @@ public class GenericRepository<TEntity,TKey> : IGenericRepository<TEntity,TKey> 
         return query;
     }
 
-    #endregion
+    #endregion /Utility Methods
 
-    #endregion
+    #endregion /Methods
 }
 #pragma warning restore CS8603 // Possible null reference return.
 #pragma warning restore CS8766

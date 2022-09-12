@@ -11,11 +11,12 @@ namespace Endpoint.Pages
         {
             this.userService = userService;
         }  
-        public void OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            //   userService.Get(1);
-            var users = userService.GetAll().Result.ToList();
-            
+            var user = await userService.Get(1, true);
+            var userDto = await userService.Get(1);
+            var users = await userService.GetAll();
+            return Page();
         }
     }
 }

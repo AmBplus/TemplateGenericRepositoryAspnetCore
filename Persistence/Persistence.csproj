@@ -24,6 +24,7 @@
 
   <ItemGroup>
     <Folder Include="GenericRepository\" />
+    <Folder Include="Configuration\" />
     <Folder Include="UserRepo\" />
   </ItemGroup>
 
