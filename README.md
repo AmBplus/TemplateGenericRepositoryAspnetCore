@@ -10,6 +10,7 @@ Template Generic Repository In Onion Architecture
 *Message Error In Implmentaion Handled By Console , You Can Log it Or Anything You Preferred  
 
 *In Application Layer , There Are Example How Use This Pattern
+  
 ** If Find Any Error Or Idea Make This Implementaion Better Tell Me (: **  
 
   --- Hope Useful And Enjoy it ---
